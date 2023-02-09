@@ -1,5 +1,7 @@
+const e = require("express");
 const express = require("express");
 const router = express.Router();
+const uuid = require("uuid");
 const { members } = require("../../Members");
 
 // Get all members
@@ -11,12 +13,50 @@ router.get("/:id", (req, res) => {
     (member) => member.id === parseInt(req.params.id)
   );
   if (member.length > 0) res.json(member);
-  else
-    res
-      .status(400)
-      .send(
-        `<p style='font-family: sans-serif;'>Sorry, such a member does not exist 😒</p>`
-      );
+  else res.status(400).json({ msg: "such member do not exitst" });
+});
+
+// Create Member
+router.post("/", (req, res) => {
+  const newMember = {
+    id: uuid.v4(),
+    name: req.body.name,
+    email: req.body.email,
+    status: "active",
+  };
+
+  if (!newMember.name || !newMember.email) {
+    return res.json({ msg: "Pls include name and an email" });
+  }
+
+  members.push(newMember);
+
+  res.json(members);
+});
+
+// Update member
+router.put("/:id", (req, res) => {
+  const member = members.filter(
+    (members) => members.id === parseInt(req.params.id)
+  );
+  if (member.length > 0) {
+    const updatedMember = req.body;
+    members.forEach((member) => {
+      if (member.id === parseInt(req.params.id)) {
+        member.name = updatedMember.name ? updatedMember.name : member.name;
+        member.email = updatedMember.email ? updatedMember.email : member.email;
+        res.json({
+          msg: "Updated member",
+          member,
+        });
+      }
+    });
+  } else {
+    res.status(400),
+      res.json({
+        msg: `No such member with an id of ${req.params.id}`,
+      });
+  }
 });
 
 module.exports = router;
