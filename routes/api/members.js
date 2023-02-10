@@ -62,7 +62,13 @@ router.delete("/:id", (req, res) => {
   const updatedMembers = members.filter(
     (member) => member.id !== parseInt(req.params.id)
   );
-  if (updatedMembers.length < members.length) res.json(updatedMembers);
+  let deletedMembers = [];
+  const deletedMember = members.filter(
+    (member) => member.id === parseInt(req.params.id)
+  );
+  deletedMembers.push(deletedMember[0]);
+  if (updatedMembers.length < members.length)
+    res.json({ deletedMembers, updatedMembers });
   else res.json({ msg: `No member with an id of ${req.params.id}` });
 });
 
