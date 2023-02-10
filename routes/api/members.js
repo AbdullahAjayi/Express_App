@@ -58,4 +58,12 @@ router.put("/:id", (req, res) => {
   }
 });
 
+router.delete("/:id", (req, res) => {
+  const updatedMembers = members.filter(
+    (member) => member.id !== parseInt(req.params.id)
+  );
+  if (updatedMembers.length < members.length) res.json(updatedMembers);
+  else res.json({ msg: `No member with an id of ${req.params.id}` });
+});
+
 module.exports = router;
