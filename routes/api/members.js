@@ -58,6 +58,7 @@ router.put("/:id", (req, res) => {
   }
 });
 
+// Delete a member
 router.delete("/:id", (req, res) => {
   const updatedMembers = members.filter(
     (member) => member.id !== parseInt(req.params.id)
